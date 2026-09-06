@@ -9,7 +9,7 @@ use helix_view::annotations::diagnostics::{
     DiagnosticFilter, InlineDiagnosticAccumulator, InlineDiagnosticsConfig,
 };
 
-use helix_view::theme::Style;
+use helix_view::theme::{Color, Style};
 use helix_view::{Document, Theme};
 
 use crate::ui::document::{LinePos, TextRenderer};
@@ -26,10 +26,18 @@ struct Styles {
 impl Styles {
     fn new(theme: &Theme) -> Styles {
         Styles {
-            hint: theme.get("hint.diagnostic.inline"),
-            info: theme.get("info.diagnostic.inline"),
-            warning: theme.get("warning.diagnostic.inline"),
-            error: theme.get("error.diagnostic.inline"),
+            hint: theme
+                .get("hint.diagnostic.inline")
+                .bg(Color::from_hex("#233745").unwrap()),
+            info: theme
+                .get("info.diagnostic.inline")
+                .bg(Color::from_hex("#22374b").unwrap()),
+            warning: theme
+                .get("warning.diagnostic.inline")
+                .bg(Color::from_hex("#373640").unwrap()),
+            error: theme
+                .get("error.diagnostic.inline")
+                .bg(Color::from_hex("#362c3d").unwrap()),
         }
     }
 
