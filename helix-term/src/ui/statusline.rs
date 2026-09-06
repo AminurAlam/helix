@@ -235,24 +235,24 @@ where
     for sev in &context.editor.config().statusline.diagnostics {
         match sev {
             Severity::Hint if hints > 0 => {
-                write(context, Span::styled("●", context.editor.theme.get("hint")));
+                write(context, Span::styled("", context.editor.theme.get("hint")));
                 write(context, format!(" {} ", hints).into());
             }
             Severity::Info if info > 0 => {
-                write(context, Span::styled("●", context.editor.theme.get("info")));
+                write(context, Span::styled("", context.editor.theme.get("info")));
                 write(context, format!(" {} ", info).into());
             }
             Severity::Warning if warnings > 0 => {
                 write(
                     context,
-                    Span::styled("●", context.editor.theme.get("warning")),
+                    Span::styled("", context.editor.theme.get("warning")),
                 );
                 write(context, format!(" {} ", warnings).into());
             }
             Severity::Error if errors > 0 => {
                 write(
                     context,
-                    Span::styled("●", context.editor.theme.get("error")),
+                    Span::styled("", context.editor.theme.get("error")),
                 );
                 write(context, format!(" {} ", errors).into());
             }
@@ -337,7 +337,7 @@ where
     write(
         context,
         if count == 1 {
-            " 1 sel ".into()
+            " ".into()
         } else {
             format!(" {}/{count} sels ", selection.primary_index() + 1).into()
         },
@@ -480,7 +480,7 @@ where
     F: Fn(&mut RenderContext<'a>, Span<'a>) + Copy,
 {
     let title = if context.doc.is_modified() {
-        "[+]"
+        "󰆓  "
     } else {
         "   "
     };
@@ -492,11 +492,7 @@ fn render_read_only_indicator<'a, F>(context: &mut RenderContext<'a>, write: F)
 where
     F: Fn(&mut RenderContext<'a>, Span<'a>) + Copy,
 {
-    let title = if context.doc.readonly {
-        " [readonly] "
-    } else {
-        ""
-    };
+    let title = if context.doc.readonly { " 󰌾 " } else { "" };
     write(context, title.into());
 }
 
