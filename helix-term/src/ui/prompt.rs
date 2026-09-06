@@ -660,10 +660,10 @@ impl Component for Prompt {
                 self.delete_word_forwards(cx.editor);
                 (self.callback_fn)(cx, &self.line, PromptEvent::Update);
             }
-            ctrl!('k') => {
-                self.kill_to_end_of_line(cx.editor);
-                (self.callback_fn)(cx, &self.line, PromptEvent::Update);
-            }
+            // ctrl!('k') => {
+            //     self.kill_to_end_of_line(cx.editor);
+            //     (self.callback_fn)(cx, &self.line, PromptEvent::Update);
+            // }
             ctrl!('u') => {
                 self.kill_to_start_of_line(cx.editor);
                 (self.callback_fn)(cx, &self.line, PromptEvent::Update);
@@ -694,7 +694,7 @@ impl Component for Prompt {
                     (self.callback_fn)(cx, &self.line, PromptEvent::Update);
                 }
             }
-            key!(Enter) => {
+            key!(Enter) | ctrl!('m') => {
                 if self.selection.is_some() && self.line.ends_with(std::path::MAIN_SEPARATOR) {
                     self.recalculate_completion(cx.editor);
                 } else {
@@ -726,13 +726,13 @@ impl Component for Prompt {
                     return close_fn;
                 }
             }
-            ctrl!('p') | key!(Up) => {
+            ctrl!('p') | ctrl!('k') | key!(Up) => {
                 user_edited = false;
                 if let Some(register) = self.history_register {
                     self.change_history(cx, register, CompletionDirection::Backward);
                 }
             }
-            ctrl!('n') | key!(Down) => {
+            ctrl!('n') | ctrl!('j') | key!(Down) => {
                 user_edited = false;
                 if let Some(register) = self.history_register {
                     self.change_history(cx, register, CompletionDirection::Forward);
