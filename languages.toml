@@ -3963,6 +3963,7 @@ indent = { tab-width = 2, unit = "  " }
 '[' = ']'
 '$' = '$'
 '"' = '"'
+"`" = "`"
 
 [[grammar]]
 name = "typst"
