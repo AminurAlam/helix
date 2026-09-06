@@ -252,12 +252,16 @@ fn buffer_close(
     args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
-    if event != PromptEvent::Validate {
-        return Ok(());
-    }
+    if cx.editor.documents.len() <= 1 {
+        quit(cx, args, event)
+    } else {
+        if event != PromptEvent::Validate {
+            return Ok(());
+        }
 
-    let document_ids = buffer_gather_paths_impl(cx.editor, args);
-    buffer_close_by_ids_impl(cx, &document_ids, false)
+        let document_ids = buffer_gather_paths_impl(cx.editor, args);
+        buffer_close_by_ids_impl(cx, &document_ids, false)
+    }
 }
 
 fn force_buffer_close(
