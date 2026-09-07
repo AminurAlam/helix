@@ -6415,18 +6415,16 @@ fn select_textobject(cx: &mut Context, objtype: textobject::TextObject) {
         _ => return,
     };
     let help_text = [
-        ("w", "Word"),
-        ("W", "WORD"),
         ("p", "Paragraph"),
-        ("t", "Type definition (tree-sitter)"),
-        ("f", "Function (tree-sitter)"),
-        ("a", "Argument/parameter (tree-sitter)"),
-        ("c", "Comment (tree-sitter)"),
-        ("T", "Test (tree-sitter)"),
-        ("e", "Data structure entry (tree-sitter)"),
-        ("m", "Closest surrounding pair (tree-sitter)"),
+        ("t", "Type definition (TS)"),
+        ("f", "Function (TS)"),
+        ("a", "Argument/parameter (TS)"),
+        ("c", "Comment (TS)"),
+        ("T", "Test (TS)"),
+        ("e", "Data structure entry (TS)"),
+        ("m", "Closest surrounding pair (TS)"),
         ("g", "Change"),
-        ("x", "(X)HTML element (tree-sitter)"),
+        ("x", "(X)HTML element (TS)"),
         (" ", "... or any character acting as a pair"),
     ];
 
