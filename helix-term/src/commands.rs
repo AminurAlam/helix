@@ -4071,16 +4071,17 @@ fn goto_line_impl(cx: &mut Context, movement: Movement) {
         let (view, doc) = current!(cx.editor);
         push_jump(view, doc);
 
-        goto_line_without_jumplist(cx.editor, cx.count, movement);
+        goto_line_without_jumplist(cx.editor, cx.count, 1, movement);
     }
 }
 
 fn goto_line_without_jumplist(
     editor: &mut Editor,
-    count: Option<NonZeroUsize>,
+    line: Option<NonZeroUsize>,
+    col: usize,
     movement: Movement,
 ) {
-    if let Some(count) = count {
+    if let Some(line) = line {
         let (view, doc) = current!(editor);
         let text = doc.text().slice(..);
         let max_line = if text.line(text.len_lines() - 1).len_chars() == 0 {
@@ -4089,8 +4090,8 @@ fn goto_line_without_jumplist(
         } else {
             text.len_lines() - 1
         };
-        let line_idx = std::cmp::min(count.get() - 1, max_line);
-        let pos = text.line_to_char(line_idx);
+        let line_idx = std::cmp::min(line.get() - 1, max_line);
+        let pos = pos_at_coords(text, Position::new(line_idx, col - 1), true);
         let selection = doc
             .selection(view.id)
             .clone()

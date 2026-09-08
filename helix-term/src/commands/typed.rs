@@ -2212,9 +2212,14 @@ fn update_goto_line_number_preview(cx: &mut compositor::Context, args: Args) -> 
 
     let scrolloff = cx.editor.config().scrolloff;
     let line = args[0].parse::<usize>()?;
+    let col = match args.get(1) {
+        Some(arg) => arg.parse::<usize>().unwrap_or(1),
+        _ => 1,
+    };
     goto_line_without_jumplist(
         cx.editor,
         NonZeroUsize::new(line),
+        col,
         if cx.editor.mode == Mode::Select {
             Movement::Extend
         } else {
@@ -3796,7 +3801,7 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
         fun: goto_line_number,
         completer: CommandCompleter::none(),
         signature: Signature {
-            positionals: (1, Some(1)),
+            positionals: (1, Some(2)),
             ..Signature::DEFAULT
         },
     },
