@@ -56,7 +56,8 @@ use self::handlers::{DynamicQueryChange, DynamicQueryHandler, PreviewHighlightHa
 
 pub const ID: &str = "picker";
 
-pub const MIN_AREA_WIDTH_FOR_PREVIEW: u16 = 72;
+pub const MIN_AREA_WIDTH_FOR_HORIZONTAL_PREVIEW: u16 = 120;
+
 /// Biggest file size to preview in bytes
 pub const MAX_FILE_SIZE_FOR_PREVIEW: u64 = 10 * 1024 * 1024;
 
@@ -1032,20 +1033,24 @@ impl<I: 'static + Send + Sync, D: 'static + Send + Sync> Component for Picker<I,
         // |         | |         |
         // +---------+ +---------+
 
-        let render_preview =
-            self.show_preview && self.file_fn.is_some() && area.width > MIN_AREA_WIDTH_FOR_PREVIEW;
+        let render_preview = self.show_preview && self.file_fn.is_some();
 
-        let picker_width = if render_preview {
-            area.width / 2
-        } else {
-            area.width
+        let picker_width = if render_preview { 2 } else { 1 };
+
+        let (picker_area, preview_area) = match area.width {
+            MIN_AREA_WIDTH_FOR_HORIZONTAL_PREVIEW.. => {
+                let picker_w = area.width / picker_width;
+                (area.with_width(picker_w), area.clip_left(picker_w))
+            }
+            _ => {
+                let picker_h = area.height / picker_width;
+                (area.with_height(picker_h), area.clip_top(picker_h))
+            }
         };
 
-        let picker_area = area.with_width(picker_width);
         self.render_picker(picker_area, surface, cx);
 
         if render_preview {
-            let preview_area = area.clip_left(picker_width);
             self.render_preview(preview_area, surface, cx);
         }
     }
@@ -1175,8 +1180,7 @@ impl<I: 'static + Send + Sync, D: 'static + Send + Sync> Component for Picker<I,
         let inner = block.inner(area);
 
         // prompt area
-        let render_preview =
-            self.show_preview && self.file_fn.is_some() && area.width > MIN_AREA_WIDTH_FOR_PREVIEW;
+        let render_preview = self.show_preview && self.file_fn.is_some();
 
         let picker_width = if render_preview {
             area.width / 2
