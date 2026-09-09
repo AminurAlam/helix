@@ -109,7 +109,7 @@ impl InlineDiagnosticsConfig {
 impl Default for InlineDiagnosticsConfig {
     fn default() -> Self {
         InlineDiagnosticsConfig {
-            cursor_line: DiagnosticFilter::Enable(Severity::Warning),
+            cursor_line: DiagnosticFilter::Disable,
             other_lines: DiagnosticFilter::Disable,
             min_diagnostic_width: 40,
             prefix_len: 1,

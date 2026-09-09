@@ -100,11 +100,9 @@ impl Default for GutterConfig {
     fn default() -> Self {
         Self {
             layout: vec![
-                GutterType::Diagnostics,
-                GutterType::Spacer,
+                GutterType::Diff,
                 GutterType::LineNumbers,
                 GutterType::Spacer,
-                GutterType::Diff,
             ],
             line_numbers: GutterLineNumbersConfig::default(),
         }
@@ -173,7 +171,7 @@ pub struct GutterLineNumbersConfig {
 
 impl Default for GutterLineNumbersConfig {
     fn default() -> Self {
-        Self { min_width: 3 }
+        Self { min_width: 1 }
     }
 }
 
@@ -212,14 +210,14 @@ impl Default for FilePickerConfig {
     fn default() -> Self {
         Self {
             hidden: true,
-            follow_symlinks: true,
+            follow_symlinks: false,
             deduplicate_links: true,
             parents: true,
             ignore: true,
             git_ignore: true,
             git_global: true,
             git_exclude: true,
-            max_depth: None,
+            max_depth: Some(5usize),
         }
     }
 }
@@ -534,7 +532,7 @@ pub struct SmartTabConfig {
 impl Default for SmartTabConfig {
     fn default() -> Self {
         SmartTabConfig {
-            enable: true,
+            enable: false,
             supersede_menu: false,
         }
     }
@@ -625,7 +623,7 @@ impl Default for LspConfig {
     fn default() -> Self {
         Self {
             enable: true,
-            display_progress_messages: false,
+            display_progress_messages: true,
             display_messages: true,
             auto_signature_help: true,
             display_signature_help_docs: true,
@@ -681,14 +679,17 @@ impl Default for StatusLineConfig {
                 E::FileName,
                 E::ReadOnlyIndicator,
                 E::FileModificationIndicator,
+                E::Diagnostics,
             ],
             center: vec![],
             right: vec![
-                E::Diagnostics,
+                E::SearchPosition,
+                E::FileType,
                 E::Selections,
                 E::Register,
-                E::Position,
+                E::PositionPercentage,
                 E::FileEncoding,
+                E::Spacer,
             ],
             separator: String::from("│"),
             mode: ModeConfig::default(),
@@ -845,7 +846,7 @@ impl std::ops::Deref for CursorShapeConfig {
 
 impl Default for CursorShapeConfig {
     fn default() -> Self {
-        Self([CursorKind::Block; 3])
+        Self([CursorKind::Block, CursorKind::Block, CursorKind::Bar])
     }
 }
 
@@ -854,11 +855,11 @@ impl Default for CursorShapeConfig {
 #[serde(rename_all = "kebab-case")]
 pub enum BufferLine {
     /// Don't render bufferline
-    #[default]
     Never,
     /// Always render
     Always,
     /// Only if multiple buffers are open
+    #[default]
     Multiple,
 }
 
@@ -1089,8 +1090,8 @@ pub struct IndentGuidesConfig {
 impl Default for IndentGuidesConfig {
     fn default() -> Self {
         Self {
-            skip_levels: 0,
-            render: false,
+            skip_levels: 1,
+            render: true,
             character: '│',
         }
     }
@@ -1171,30 +1172,33 @@ impl Default for Config {
             shell: if cfg!(windows) {
                 vec!["cmd".to_owned(), "/C".to_owned()]
             } else {
-                vec!["sh".to_owned(), "-c".to_owned()]
+                vec!["fish".to_owned(), "-c".to_owned()]
             },
             line_number: LineNumber::Absolute,
-            cursorline: false,
+            cursorline: true,
             cursorcolumn: false,
             gutters: GutterConfig::default(),
-            middle_click_paste: true,
+            middle_click_paste: false,
             auto_pairs: AutoPairConfig::default(),
             auto_completion: true,
             path_completion: true,
             word_completion: WordCompletion::default(),
             auto_format: true,
+            #[cfg(not(target_os = "android"))]
+            default_yank_register: '+',
+            #[cfg(target_os = "android")]
             default_yank_register: '"',
             auto_save: AutoSave::default(),
             idle_timeout: Duration::from_millis(250),
             completion_timeout: Duration::from_millis(250),
             preview_completion_insert: true,
-            completion_trigger_len: 2,
+            completion_trigger_len: 0,
             auto_info: true,
             file_picker: FilePickerConfig::default(),
             file_explorer: FileExplorerConfig::default(),
             statusline: StatusLineConfig::default(),
             cursor_shape: CursorShapeConfig::default(),
-            true_color: false,
+            true_color: true,
             undercurl: false,
             search: SearchConfig::default(),
             lsp: LspConfig::default(),
@@ -1203,22 +1207,22 @@ impl Default for Config {
             whitespace: WhitespaceConfig::default(),
             bufferline: BufferLine::default(),
             indent_guides: IndentGuidesConfig::default(),
-            color_modes: false,
+            color_modes: true,
             soft_wrap: SoftWrap {
                 enable: Some(false),
                 ..SoftWrap::default()
             },
             text_width: 80,
             completion_replace: false,
-            continue_comments: true,
+            continue_comments: false,
             workspace_lsp_roots: Vec::new(),
             default_line_ending: LineEndingConfig::default(),
             insert_final_newline: true,
-            atomic_save: true,
+            atomic_save: false,
             trim_final_newlines: false,
             trim_trailing_whitespace: false,
             smart_tab: Some(SmartTabConfig::default()),
-            popup_border: PopupBorderConfig::None,
+            popup_border: PopupBorderConfig::All,
             indent_heuristic: IndentationHeuristic::default(),
             jump_label_alphabet: ('a'..='z').collect(),
             inline_diagnostics: InlineDiagnosticsConfig::default(),
@@ -1238,7 +1242,7 @@ impl Default for SearchConfig {
         Self {
             wrap_around: true,
             smart_case: true,
-            max_matches: OptionToml::Some(100),
+            max_matches: OptionToml::Some(250),
         }
     }
 }
