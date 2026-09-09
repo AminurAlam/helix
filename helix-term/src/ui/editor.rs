@@ -1629,7 +1629,7 @@ impl Component for EditorView {
         };
 
         // -1 for commandline and -1 for bufferline
-        let mut editor_area = area.clip_bottom(1);
+        let mut editor_area = area.clip_bottom(0);
         if use_bufferline {
             editor_area = editor_area.clip_top(1);
         }
@@ -1668,7 +1668,7 @@ impl Component for EditorView {
 
             surface.set_string(
                 area.x,
-                area.y + area.height.saturating_sub(1),
+                (area.y + area.height.saturating_sub(1)).saturating_sub(1),
                 status_msg,
                 style,
             );
@@ -1698,7 +1698,7 @@ impl Component for EditorView {
                     + area
                         .width
                         .saturating_sub(key_width + macro_width + trust_width),
-                area.y + area.height.saturating_sub(1),
+                (area.y + area.height.saturating_sub(1)).saturating_sub(1),
                 disp.get(disp.len().saturating_sub(key_width as usize)..)
                     .unwrap_or(&disp),
                 style,
