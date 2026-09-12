@@ -3675,7 +3675,7 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
     },
     TypableCommand {
         name: "tree-sitter-scopes",
-        aliases: &[],
+        aliases: &["tss"],
         doc: "Display tree sitter scopes, primarily for theming and development.",
         fun: tree_sitter_scopes,
         completer: CommandCompleter::none(),
@@ -3686,7 +3686,7 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
     },
     TypableCommand {
         name: "tree-sitter-highlight-name",
-        aliases: &[],
+        aliases: &["tsh"],
         doc: "Display name of tree-sitter highlight scope under the cursor.",
         fun: tree_sitter_highlight_name,
         completer: CommandCompleter::none(),
@@ -3697,7 +3697,7 @@ pub const TYPABLE_COMMAND_LIST: &[TypableCommand] = &[
     },
     TypableCommand {
         name: "tree-sitter-layers",
-        aliases: &[],
+        aliases: &["tsl"],
         doc: "Display language names of tree-sitter injection layers under the cursor.",
         fun: tree_sitter_layers,
         completer: CommandCompleter::none(),
