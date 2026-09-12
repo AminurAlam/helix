@@ -1208,6 +1208,9 @@ impl Default for Config {
             path_completion: true,
             word_completion: WordCompletion::default(),
             auto_format: false,
+            #[cfg(not(target_os = "android"))]
+            default_yank_register: '+',
+            #[cfg(target_os = "android")]
             default_yank_register: '"',
             auto_save: AutoSave::default(),
             idle_timeout: Duration::from_millis(250),
