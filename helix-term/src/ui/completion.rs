@@ -47,21 +47,21 @@ impl menu::Item for CompletionItem {
 
         let kind = match self {
             CompletionItem::Lsp(LspCompletionItem { item, .. }) => match item.kind {
-                Some(lsp::CompletionItemKind::TEXT) => "text".into(),
-                Some(lsp::CompletionItemKind::METHOD) => "method".into(),
-                Some(lsp::CompletionItemKind::FUNCTION) => "function".into(),
-                Some(lsp::CompletionItemKind::CONSTRUCTOR) => "constructor".into(),
-                Some(lsp::CompletionItemKind::FIELD) => "field".into(),
-                Some(lsp::CompletionItemKind::VARIABLE) => "variable".into(),
-                Some(lsp::CompletionItemKind::CLASS) => "class".into(),
-                Some(lsp::CompletionItemKind::INTERFACE) => "interface".into(),
-                Some(lsp::CompletionItemKind::MODULE) => "module".into(),
-                Some(lsp::CompletionItemKind::PROPERTY) => "property".into(),
-                Some(lsp::CompletionItemKind::UNIT) => "unit".into(),
-                Some(lsp::CompletionItemKind::VALUE) => "value".into(),
-                Some(lsp::CompletionItemKind::ENUM) => "enum".into(),
-                Some(lsp::CompletionItemKind::KEYWORD) => "keyword".into(),
-                Some(lsp::CompletionItemKind::SNIPPET) => "snippet".into(),
+                Some(lsp::CompletionItemKind::TEXT) => "".into(),
+                Some(lsp::CompletionItemKind::METHOD) => "󰊕".into(),
+                Some(lsp::CompletionItemKind::FUNCTION) => "󰊕".into(),
+                Some(lsp::CompletionItemKind::CONSTRUCTOR) => "󰒓".into(),
+                Some(lsp::CompletionItemKind::FIELD) => "".into(),
+                Some(lsp::CompletionItemKind::VARIABLE) => "󰂡".into(),
+                Some(lsp::CompletionItemKind::CLASS) => "󰠱".into(),
+                Some(lsp::CompletionItemKind::INTERFACE) => "".into(),
+                Some(lsp::CompletionItemKind::MODULE) => "".into(),
+                Some(lsp::CompletionItemKind::PROPERTY) => "󰜢".into(),
+                Some(lsp::CompletionItemKind::UNIT) => "".into(),
+                Some(lsp::CompletionItemKind::VALUE) => "󰎠".into(),
+                Some(lsp::CompletionItemKind::ENUM) => "".into(),
+                Some(lsp::CompletionItemKind::KEYWORD) => "󰌋".into(),
+                Some(lsp::CompletionItemKind::SNIPPET) => "".into(),
                 Some(lsp::CompletionItemKind::COLOR) => item
                     .documentation
                     .as_ref()
@@ -83,15 +83,15 @@ impl menu::Item for CompletionItem {
                             Span::styled("■", Style::default().fg(color)),
                         ])
                     }),
-                Some(lsp::CompletionItemKind::FILE) => "file".into(),
-                Some(lsp::CompletionItemKind::REFERENCE) => "reference".into(),
-                Some(lsp::CompletionItemKind::FOLDER) => "folder".into(),
-                Some(lsp::CompletionItemKind::ENUM_MEMBER) => "enum_member".into(),
-                Some(lsp::CompletionItemKind::CONSTANT) => "constant".into(),
-                Some(lsp::CompletionItemKind::STRUCT) => "struct".into(),
-                Some(lsp::CompletionItemKind::EVENT) => "event".into(),
-                Some(lsp::CompletionItemKind::OPERATOR) => "operator".into(),
-                Some(lsp::CompletionItemKind::TYPE_PARAMETER) => "type_param".into(),
+                Some(lsp::CompletionItemKind::FILE) => "󰈙".into(),
+                Some(lsp::CompletionItemKind::REFERENCE) => "".into(),
+                Some(lsp::CompletionItemKind::FOLDER) => "󰉋".into(),
+                Some(lsp::CompletionItemKind::ENUM_MEMBER) => "".into(),
+                Some(lsp::CompletionItemKind::CONSTANT) => "󰏿".into(),
+                Some(lsp::CompletionItemKind::STRUCT) => "".into(),
+                Some(lsp::CompletionItemKind::EVENT) => "".into(),
+                Some(lsp::CompletionItemKind::OPERATOR) => "󰆕".into(),
+                Some(lsp::CompletionItemKind::TYPE_PARAMETER) => "".into(),
                 Some(kind) => {
                     log::error!("Received unknown completion item kind: {:?}", kind);
                     "".into()
