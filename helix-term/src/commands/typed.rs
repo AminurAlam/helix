@@ -108,22 +108,25 @@ fn force_exit(cx: &mut compositor::Context, args: Args, event: PromptEvent) -> a
     quit(cx, Args::default(), event)
 }
 
-fn quit(cx: &mut compositor::Context, _args: Args, event: PromptEvent) -> anyhow::Result<()> {
-    log::debug!("quitting...");
-
+fn quit(cx: &mut compositor::Context, args: Args, event: PromptEvent) -> anyhow::Result<()> {
     if event != PromptEvent::Validate {
         return Ok(());
     }
 
-    // last view and we have unsaved changes
-    if cx.editor.tree.views().count() == 1 {
-        buffers_remaining_impl(cx.editor)?
+    if cx.editor.documents.len() <= 1 {
+        // last view and we have unsaved changes
+        if cx.editor.tree.views().count() == 1 {
+            buffers_remaining_impl(cx.editor)?
+        }
+
+        cx.block_try_flush_writes()?;
+        cx.editor.close(view!(cx.editor).id);
+
+        Ok(())
+    } else {
+        let document_ids = buffer_gather_paths_impl(cx.editor, args);
+        buffer_close_by_ids_impl(cx, &document_ids, false)
     }
-
-    cx.block_try_flush_writes()?;
-    cx.editor.close(view!(cx.editor).id);
-
-    Ok(())
 }
 
 fn force_quit(cx: &mut compositor::Context, _args: Args, event: PromptEvent) -> anyhow::Result<()> {
@@ -252,16 +255,12 @@ fn buffer_close(
     args: Args,
     event: PromptEvent,
 ) -> anyhow::Result<()> {
-    if cx.editor.documents.len() <= 1 {
-        quit(cx, args, event)
-    } else {
-        if event != PromptEvent::Validate {
-            return Ok(());
-        }
-
-        let document_ids = buffer_gather_paths_impl(cx.editor, args);
-        buffer_close_by_ids_impl(cx, &document_ids, false)
+    if event != PromptEvent::Validate {
+        return Ok(());
     }
+
+    let document_ids = buffer_gather_paths_impl(cx.editor, args);
+    buffer_close_by_ids_impl(cx, &document_ids, false)
 }
 
 fn force_buffer_close(
