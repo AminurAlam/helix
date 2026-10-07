@@ -21,6 +21,7 @@ biome-lsp-proxy = { command = "biome", args = ["lsp-proxy"] }
 bitbake-language-server = { command = "bitbake-language-server" }
 buck2 = { command = "buck2", args = ["lsp"] }
 buf = { command = "buf", args = ["lsp", "serve", "--timeout", "0"] }
+codebook = { command = "codebook-lsp", args = ["serve"] }
 c3-lsp = { command = "c3-lsp" }
 cairo-language-server = { command = "cairo-language-server", args = [] }
 circom-lsp = { command = "circom-lsp" }
@@ -996,7 +997,7 @@ name = "javascript"
 scope = "source.js"
 injection-regex = "(js|javascript)"
 language-id = "javascript"
-file-types = ["js", "mjs", "cjs", "rules", "es6", "pac", "gs", { glob = ".node_repl_history" }, { glob = "jakefile" }]
+file-types = ["js", "mjs", "cjs", "rules", "es6", "pac", "gs", { glob = ".node_repl_history" }, { glob = "jakefile" }, { glob = "librewolf.overrides.cfg" }]
 shebangs = ["node"]
 roots = [ "package.json", "jsconfig.json" ]
 comment-token = "//"
@@ -1624,6 +1625,8 @@ comment-tokens = ["--", "---"]
 block-comment-tokens = { start = "--[[", end = "--]]" }
 indent = { tab-width = 2, unit = "  " }
 language-servers = [ "lua-language-server" ]
+formatter = { command = "stylua", args = ["-f", "%sh{printenv HOME}/repos/dotfiles/other/stylua.toml", "-"] }
+
 
 [[grammar]]
 name = "lua"
@@ -2000,15 +2003,15 @@ indent = { tab-width = 2, unit = "  " }
 language-servers = [ "cl-lsp" ]
 grammar = "commonlisp"
 
-[[grammar]]
-name = "commonlisp"
-source = { git = "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp", rev = "32323509b3d9fe96607d151c2da2c9009eb13a2f" }
-
 [language.auto-pairs]
 '(' = ')'
 '{' = '}'
 '[' = ']'
 '"' = '"'
+
+[[grammar]]
+name = "commonlisp"
+source = { git = "https://github.com/tree-sitter-grammars/tree-sitter-commonlisp", rev = "32323509b3d9fe96607d151c2da2c9009eb13a2f" }
 
 [[language]]
 name = "comment"
@@ -2108,7 +2111,7 @@ scope = "source.md"
 injection-regex = "md|markdown"
 file-types = ["md", "livemd", "markdown", "mdx", "mkd", "mkdn", "mdwn", "mdown", "markdn", "mdtxt", "mdtext", "workbook", { glob = "PULLREQ_EDITMSG" }]
 roots = [".marksman.toml"]
-language-servers = [ "marksman", "markdown-oxide", "rumdl" ]
+language-servers = [ "marksman", "markdown-oxide", "rumdl", "codebook" ]
 indent = { tab-width = 2, unit = "  " }
 block-comment-tokens = { start = "<!--", end = "-->" }
 word-completion.trigger-length = 4
@@ -2237,7 +2240,7 @@ indent = { tab-width = 4, unit = "    " }
 rulers = [51, 73]
 text-width = 72
 grammar = "gitcommit"
-language-servers = [ "commit-lsp" ]
+language-servers = [ "commit-lsp", "codebook" ]
 
 [[grammar]]
 name = "gitcommit"
@@ -2299,7 +2302,7 @@ source = { git = "https://github.com/tree-sitter/tree-sitter-regex", rev = "b2ac
 [[language]]
 name = "git-config"
 scope = "source.gitconfig"
-file-types = ["gitconfig", { glob = ".gitmodules" }, { glob = "gitconfig" }, { glob = ".gitconfig" }, { glob = ".git/config" }, { glob = ".config/git/config" }, { glob = ".git/modules/*/config" }, { glob = "config.worktree" }, { glob = ".lfsconfig" }]
+file-types = ["gitconfig", { glob = ".gitmodules" }, { glob = "gitconfig" }, { glob = ".gitconfig" }, { glob = ".git/config" }, { glob = ".config/git/config" }, { glob = ".git/modules/*/config" }, { glob = "config.worktree" }, { glob = ".lfsconfig" }, { glob = "git/config" }, { glob = "git/delta.conf" }]
 injection-regex = "git-config"
 comment-token = "#"
 indent = { tab-width = 4, unit = "\t" }
@@ -2590,7 +2593,7 @@ grammar = "embedded-template"
 
 [[grammar]]
 name = "embedded-template"
-source = { git = "https://github.com/tree-sitter/tree-sitter-embedded-template", rev = "5bce9d580d3b78f48e13e331f69dfa0abd4ff68b" }
+source = { git = "https://github.com/tree-sitter/tree-sitter-embedded-template", rev = "3499d85f0a0d937c507a4a65368f2f63772786e1" }
 
 [[language]]
 name = "eex"
@@ -2808,7 +2811,7 @@ source = { git = "https://github.com/tree-sitter-grammars/tree-sitter-meson", re
 [[language]]
 name = "ssh_client_config"
 scope = "source.ssh_client_config"
-file-types = [{ glob = ".ssh/config" }, { glob = "/etc/ssh/ssh_config" }, { glob = "ssh_config.d/*.conf" } ]
+file-types = [{ glob = ".ssh/config" }, { glob = "ssh_config" }, { glob = "ssh_config.d/*.conf" } ]
 comment-token = "#"
 
 [[grammar]]
@@ -3319,6 +3322,7 @@ file-types = [
   "terminal",
   "tld",
   "tmx",
+  "ttml",
   "ui",
   "vbproj.user",
   "vcxproj",
@@ -3466,6 +3470,7 @@ file-types = [
   { glob = ".aws/config" },
   "properties",
   "cfg",
+  "conf",
   "directory",
   { glob = ".wslconfig" },
   { glob = ".buckconfig" },
@@ -3950,11 +3955,11 @@ grammar = "html"
 [[language]]
 name = "typst"
 scope = "source.typst"
-injection-regex = "typ(st)?"
+injection-regex = "typ(st|c)?"
 file-types = ["typst", "typ"]
 comment-token = "//"
 block-comment-tokens = { start = "/*", end = "*/" }
-language-servers = ["tinymist"]
+language-servers = ["tinymist", "codebook"]
 indent = { tab-width = 2, unit = "  " }
 
 [language.auto-pairs]
