@@ -2450,13 +2450,17 @@ fn sort(cx: &mut compositor::Context, args: Args, event: PromptEvent) -> anyhow:
     let (view, doc) = current!(cx.editor);
     let text = doc.text().slice(..);
 
-    let selection = doc.selection(view.id);
+    let init_selection = doc.selection(view.id);
 
-    if selection.len() == 1 {
-        bail!("Sorting requires multiple selections. Hint: split selection first");
-    }
+    let new_selection = if init_selection.len() == 1 {
+        // bail!("Sorting requires multiple selections. Hint: split selection first");
+        selection::split_on_newline(text, doc.selection(view.id))
+        // doc.set_selection(view.id, new_selection);
+    } else {
+        init_selection.clone()
+    };
 
-    let mut fragments: Vec<_> = selection
+    let mut fragments: Vec<_> = new_selection
         .slices(text)
         .map(|fragment| fragment.chunks().collect())
         .collect();
@@ -2472,7 +2476,7 @@ fn sort(cx: &mut compositor::Context, args: Args, event: PromptEvent) -> anyhow:
 
     let transaction = Transaction::change(
         doc.text(),
-        selection
+        new_selection
             .into_iter()
             .zip(fragments)
             .map(|(s, fragment)| (s.from(), s.to(), Some(fragment))),
