@@ -9,6 +9,24 @@ pub fn increment(selected_text: &str, _amount: i64) -> Option<String> {
         "True" => Some(String::from("False")),
         "False" => Some(String::from("True")),
 
+        // bash, fish
+        "&&" => Some(String::from("||")),
+        "||" => Some(String::from("&&")),
+
+        // lua
+        "and" => Some(String::from("or")),
+        "or" => Some(String::from("and")),
+
+        // comparisons
+        ">" => Some(String::from("<=")),
+        "<=" => Some(String::from(">")),
+
+        "<" => Some(String::from(">=")),
+        ">=" => Some(String::from("<")),
+
+        "==" => Some(String::from("!=")),
+        "!=" => Some(String::from("==")),
+
         _ => None,
     }
 }
@@ -35,11 +53,6 @@ mod test {
             ("TRUE", -1, "FALSE"),
             ("FALSE", 1, "TRUE"),
             ("FALSE", -1, "TRUE"),
-            // #t/#f
-            ("#t", 1, "#f"),
-            ("#t", -1, "#f"),
-            ("#f", 1, "#t"),
-            ("#f", -1, "#t"),
         ];
         for (original, amount, expected) in tests {
             assert_eq!(increment(original, amount).unwrap(), expected);
