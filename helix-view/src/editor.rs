@@ -216,7 +216,7 @@ impl Default for FilePickerConfig {
             git_ignore: true,
             git_global: true,
             git_exclude: true,
-            max_depth: None,
+            max_depth: Some(5usize),
         }
     }
 }
@@ -870,7 +870,7 @@ impl std::ops::Deref for CursorShapeConfig {
 
 impl Default for CursorShapeConfig {
     fn default() -> Self {
-        Self([CursorKind::Block; 3])
+        Self([CursorKind::Block, CursorKind::Block, CursorKind::Bar])
     }
 }
 
@@ -1207,7 +1207,7 @@ impl Default for Config {
             auto_completion: true,
             path_completion: true,
             word_completion: WordCompletion::default(),
-            auto_format: false,
+            auto_format: true,
             #[cfg(not(target_os = "android"))]
             default_yank_register: '+',
             #[cfg(target_os = "android")]
@@ -1216,7 +1216,7 @@ impl Default for Config {
             idle_timeout: Duration::from_millis(250),
             completion_timeout: Duration::from_millis(250),
             preview_completion_insert: true,
-            completion_trigger_len: 2,
+            completion_trigger_len: 0,
             auto_info: true,
             file_picker: FilePickerConfig::default(),
             file_explorer: FileExplorerConfig::default(),
@@ -1242,7 +1242,7 @@ impl Default for Config {
             workspace_lsp_roots: Vec::new(),
             default_line_ending: LineEndingConfig::default(),
             insert_final_newline: true,
-            atomic_save: true,
+            atomic_save: false,
             trim_final_newlines: false,
             trim_trailing_whitespace: false,
             smart_tab: Some(SmartTabConfig::default()),
