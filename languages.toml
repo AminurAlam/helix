@@ -1625,7 +1625,7 @@ comment-tokens = ["--", "---"]
 block-comment-tokens = { start = "--[[", end = "--]]" }
 indent = { tab-width = 2, unit = "  " }
 language-servers = [ "lua-language-server" ]
-formatter = { command = "stylua", args = ["-f", "%sh{printenv HOME}/repos/dotfiles/other/stylua.toml", "-"] }
+formatter = { command = "stylua", args = ["--search-parent-directories", "-"] }
 
 
 [[grammar]]
