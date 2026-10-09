@@ -10,7 +10,7 @@ use crate::{
         next_grapheme_boundary, nth_next_grapheme_boundary, nth_prev_grapheme_boundary,
         prev_grapheme_boundary,
     },
-    line_ending::rope_is_line_ending,
+    line_ending::{line_end_char_index, rope_is_line_ending},
     position::char_idx_at_visual_block_offset,
     syntax,
     text_annotations::TextAnnotations,
@@ -41,6 +41,7 @@ pub fn move_horizontally(
     _: &mut TextAnnotations,
 ) -> Range {
     let pos = range.cursor(slice);
+    let line = slice.char_to_line(pos);
 
     // Compute the new position.
     let new_pos = match dir {
@@ -48,8 +49,26 @@ pub fn move_horizontally(
         Direction::Backward => nth_prev_grapheme_boundary(slice, pos, count),
     };
 
-    // Compute the final new range.
-    range.put_cursor(slice, new_pos, behaviour == Movement::Extend)
+    let new_range = range.put_cursor(slice, new_pos, behaviour == Movement::Extend);
+    let new_pos = new_range.cursor(slice);
+    let new_line = slice.char_to_line(new_pos);
+
+    match new_line.cmp(&line) {
+        std::cmp::Ordering::Equal => {
+            // we'll end up in same line - move there
+            new_range
+        }
+        std::cmp::Ordering::Less => {
+            // we'll end up in a line before - move to the beginning of the line
+            let line_beginning = slice.line_to_char(line);
+            range.put_cursor(slice, line_beginning, behaviour == Movement::Extend)
+        }
+        std::cmp::Ordering::Greater => {
+            // we'll end up in a line after - move to the end of the line
+            let line_end = line_end_char_index(&slice, line);
+            range.put_cursor(slice, line_end, behaviour == Movement::Extend)
+        }
+    }
 }
 
 pub fn move_vertically_visual(
