@@ -52,6 +52,34 @@ pub fn move_horizontally(
     range.put_cursor(slice, new_pos, behaviour == Movement::Extend)
 }
 
+pub fn move_char_horizontally(
+    slice: RopeSlice,
+    range: Range,
+    dir: Direction,
+    count: usize,
+    behaviour: Movement,
+    bound: bool,
+) -> Range {
+    let pos = range.cursor(slice);
+    let line = slice.char_to_line(pos);
+
+    // Compute the new position.
+    let new_pos = match dir {
+        Direction::Forward => nth_next_grapheme_boundary(slice, pos, count),
+        Direction::Backward => nth_prev_grapheme_boundary(slice, pos, count),
+    };
+
+    let new_range = range.put_cursor(slice, new_pos, behaviour == Movement::Extend);
+    let new_pos = new_range.cursor(slice);
+    let new_line = slice.char_to_line(new_pos);
+
+    if bound && count == 1 && new_line.cmp(&line).is_ne() {
+        range
+    } else {
+        new_range
+    }
+}
+
 pub fn move_vertically_visual(
     slice: RopeSlice,
     range: Range,

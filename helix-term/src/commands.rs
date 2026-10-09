@@ -749,14 +749,35 @@ fn move_impl(cx: &mut Context, move_fn: MoveFn, dir: Direction, behaviour: Movem
     doc.set_selection(view.id, selection);
 }
 
-use helix_core::movement::{move_horizontally, move_vertically};
+use helix_core::movement::{move_char_horizontally, move_vertically};
+
+fn move_char_impl(cx: &mut Context, dir: Direction, behaviour: Movement) {
+    let count = cx.count();
+    let (view, doc) = current!(cx.editor);
+    let text = doc.text().slice(..);
+
+    let selection = doc.selection(view.id).clone().transform(|range| {
+        move_char_horizontally(
+            text,
+            range,
+            dir,
+            count,
+            behaviour,
+            match cx.editor.mode {
+                Mode::Normal => true,
+                _ => false,
+            },
+        )
+    });
+    doc.set_selection(view.id, selection);
+}
 
 fn move_char_left(cx: &mut Context) {
-    move_impl(cx, move_horizontally, Direction::Backward, Movement::Move)
+    move_char_impl(cx, Direction::Backward, Movement::Move)
 }
 
 fn move_char_right(cx: &mut Context) {
-    move_impl(cx, move_horizontally, Direction::Forward, Movement::Move)
+    move_char_impl(cx, Direction::Forward, Movement::Move)
 }
 
 fn move_line_up(cx: &mut Context) {
@@ -786,11 +807,11 @@ fn move_visual_line_down(cx: &mut Context) {
 }
 
 fn extend_char_left(cx: &mut Context) {
-    move_impl(cx, move_horizontally, Direction::Backward, Movement::Extend)
+    move_char_impl(cx, Direction::Backward, Movement::Extend)
 }
 
 fn extend_char_right(cx: &mut Context) {
-    move_impl(cx, move_horizontally, Direction::Forward, Movement::Extend)
+    move_char_impl(cx, Direction::Forward, Movement::Extend)
 }
 
 fn extend_line_up(cx: &mut Context) {
