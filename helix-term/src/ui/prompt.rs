@@ -726,19 +726,19 @@ impl Component for Prompt {
                     return close_fn;
                 }
             }
-            ctrl!('p') | ctrl!('k') | key!(Up) => {
+            ctrl!('k') | key!(Up) => {
                 user_edited = false;
                 if let Some(register) = self.history_register {
                     self.change_history(cx, register, CompletionDirection::Backward);
                 }
             }
-            ctrl!('n') | ctrl!('j') | key!(Down) => {
+            ctrl!('j') | key!(Down) => {
                 user_edited = false;
                 if let Some(register) = self.history_register {
                     self.change_history(cx, register, CompletionDirection::Forward);
                 }
             }
-            key!(Tab) => {
+            ctrl!('n') | key!(Tab) => {
                 self.change_completion_selection(CompletionDirection::Forward);
                 // if single completion candidate is a directory list content in completion
                 if self.completion.len() == 1 && self.line.ends_with(std::path::MAIN_SEPARATOR) {
@@ -746,7 +746,7 @@ impl Component for Prompt {
                 }
                 (self.callback_fn)(cx, &self.line, PromptEvent::Update)
             }
-            shift!(Tab) => {
+            ctrl!('p') | shift!(Tab) => {
                 self.change_completion_selection(CompletionDirection::Backward);
                 (self.callback_fn)(cx, &self.line, PromptEvent::Update)
             }
