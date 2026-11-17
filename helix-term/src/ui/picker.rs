@@ -1043,8 +1043,8 @@ impl<I: 'static + Send + Sync, D: 'static + Send + Sync> Picker<I, D> {
         let fits_stacked = area.height >= MIN_AREA_HEIGHT_FOR_STACKED_PREVIEW;
         let portrait = area.width < CELL_ASPECT * area.height;
         if fits_stacked && (portrait || !fits_beside) {
-            let preview = area.with_height(area.height - area.height / 3);
-            (area.clip_top(preview.height), Some(preview))
+            let prompt = area.with_height(area.height / 3);
+            (prompt, Some(area.clip_top(prompt.height)))
         } else if fits_beside {
             let picker = area.with_width(area.width / 2);
             (picker, Some(area.clip_left(picker.width)))
