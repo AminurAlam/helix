@@ -59,7 +59,7 @@ pub const ID: &str = "picker";
 pub const MIN_AREA_WIDTH_FOR_PREVIEW: u16 = 72;
 pub const MIN_AREA_HEIGHT_FOR_STACKED_PREVIEW: u16 = 36;
 /// Terminal cells are about 1:2 aspect ratio
-const CELL_ASPECT: u16 = 2;
+const CELL_ASPECT: u16 = 3;
 /// Biggest file size to preview in bytes
 pub const MAX_FILE_SIZE_FOR_PREVIEW: u64 = 10 * 1024 * 1024;
 
